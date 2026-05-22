@@ -1,6 +1,6 @@
 const { quotes } = require('./store');
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -8,4 +8,4 @@ export default function handler(req, res) {
   const body = req.body || {};
   quotes.set(quoteId, { ...body, quoteId, status: 'pending', createdAt: new Date().toISOString() });
   return res.status(200).json({ quoteId });
-}
+};
