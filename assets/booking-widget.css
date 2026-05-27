@@ -1,0 +1,453 @@
+/* =====================================================
+   MMM BOOKING WIDGET — Cyan + Navy Dark Theme
+   ===================================================== */
+
+:root {
+  --mmm-navy:       #0b1220;
+  --mmm-navy-2:     #111d30;
+  --mmm-navy-3:     #1a2a45;
+  --mmm-navy-4:     #243554;
+  --mmm-cyan:       #43e0f9;
+  --mmm-cyan-glow:  rgba(67, 224, 249, 0.18);
+  --mmm-text:       #e8f4f8;
+  --mmm-muted:      #7ca9bc;
+  --mmm-success:    #4ade80;
+  --mmm-error:      #f87171;
+}
+
+/* ── Floating trigger button ─────────────────────── */
+.mmm-book-float {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 900;
+  background: var(--mmm-cyan);
+  color: var(--mmm-navy);
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(67, 224, 249, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mmm-book-float:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(67, 224, 249, 0.45);
+}
+
+/* ── Overlay ─────────────────────────────────────── */
+.mmm-book-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 20, 0.82);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* ── Modal shell ─────────────────────────────────── */
+.mmm-book-modal {
+  background: var(--mmm-navy-2);
+  color: var(--mmm-text);
+  width: 100%;
+  max-width: 520px;
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--mmm-navy-4);
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────── */
+.mmm-book-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--mmm-navy-4);
+  flex-shrink: 0;
+}
+.mmm-book-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--mmm-text);
+}
+.mmm-book-close {
+  background: none;
+  border: none;
+  color: var(--mmm-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.mmm-book-close:hover { color: var(--mmm-text); }
+
+/* ── Step indicator ──────────────────────────────── */
+.mmm-step-bar {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--mmm-navy-4);
+  flex-shrink: 0;
+}
+.mmm-step-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.mmm-step-dot--idle {
+  background: var(--mmm-navy-3);
+  color: var(--mmm-muted);
+  border: 1px solid var(--mmm-navy-4);
+}
+.mmm-step-dot--active {
+  background: var(--mmm-cyan);
+  color: var(--mmm-navy);
+  box-shadow: 0 0 10px rgba(67, 224, 249, 0.5);
+}
+.mmm-step-dot--done {
+  background: rgba(67, 224, 249, 0.2);
+  color: var(--mmm-cyan);
+  border: 1px solid var(--mmm-cyan);
+}
+.mmm-step-line {
+  flex: 1;
+  height: 2px;
+  background: var(--mmm-navy-4);
+  margin: 0 0.4rem;
+  border-radius: 2px;
+  transition: background 0.3s;
+}
+.mmm-step-line--done { background: var(--mmm-cyan); }
+
+/* ── Body (scrollable) ───────────────────────────── */
+.mmm-book-body {
+  padding: 1.1rem 1.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ── Form primitives ─────────────────────────────── */
+.mmm-book-row {
+  display: flex;
+  gap: 0.75rem;
+}
+.mmm-book-field {
+  margin-bottom: 0.85rem;
+  flex: 1;
+  min-width: 0;
+}
+.mmm-book-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.3rem;
+  color: var(--mmm-muted);
+  font-weight: 600;
+}
+.mmm-optional {
+  font-size: 0.7rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--mmm-muted);
+  opacity: 0.7;
+  font-weight: 400;
+}
+.mmm-book-input,
+.mmm-book-select,
+.mmm-book-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.65rem;
+  border-radius: 7px;
+  border: 1px solid var(--mmm-navy-4);
+  background: var(--mmm-navy-3);
+  color: var(--mmm-text);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+.mmm-book-input:focus,
+.mmm-book-select:focus,
+.mmm-book-textarea:focus {
+  border-color: var(--mmm-cyan);
+  box-shadow: 0 0 0 3px var(--mmm-cyan-glow);
+}
+.mmm-book-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237ca9bc' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  padding-right: 2rem;
+}
+.mmm-book-textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+/* ── Service cards (step 2) ──────────────────────── */
+.mmm-service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+.mmm-service-card {
+  background: var(--mmm-navy-3);
+  border: 1px solid var(--mmm-navy-4);
+  border-radius: 9px;
+  padding: 0.75rem;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  gap: 0.5rem;
+  align-items: start;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.mmm-service-card:hover {
+  border-color: var(--mmm-cyan);
+  background: rgba(67, 224, 249, 0.05);
+}
+.mmm-service-card--selected {
+  border-color: var(--mmm-cyan);
+  background: var(--mmm-cyan-glow);
+  box-shadow: 0 0 0 1px var(--mmm-cyan) inset;
+}
+.mmm-service-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--mmm-navy-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--mmm-cyan);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.mmm-service-card--selected .mmm-service-check {
+  background: var(--mmm-cyan);
+  border-color: var(--mmm-cyan);
+  color: var(--mmm-navy);
+  font-weight: 900;
+}
+.mmm-service-info { min-width: 0; }
+.mmm-service-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--mmm-text);
+  line-height: 1.2;
+}
+.mmm-service-desc {
+  font-size: 0.72rem;
+  color: var(--mmm-muted);
+  margin-top: 0.2rem;
+  line-height: 1.3;
+}
+.mmm-service-duration {
+  font-size: 0.68rem;
+  color: var(--mmm-cyan);
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+.mmm-service-price {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--mmm-cyan);
+  white-space: nowrap;
+  padding-top: 1px;
+}
+
+/* Total / deposit bar (step 2) */
+.mmm-total-bar {
+  background: var(--mmm-navy-3);
+  border: 1px solid var(--mmm-navy-4);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: space-between;
+  align-items: center;
+}
+.mmm-total-bar--empty {
+  color: var(--mmm-muted);
+  font-size: 0.8rem;
+  justify-content: center;
+}
+.mmm-total-label {
+  font-size: 0.82rem;
+  color: var(--mmm-text);
+}
+.mmm-total-label strong { color: var(--mmm-cyan); }
+.mmm-deposit-note {
+  font-size: 0.72rem;
+  color: var(--mmm-muted);
+}
+
+/* ── Time slots (step 3) ─────────────────────────── */
+.mmm-tz {
+  font-size: 0.7rem;
+  color: var(--mmm-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  margin-left: 0.4rem;
+}
+.mmm-timeslot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.mmm-timeslot-btn {
+  background: var(--mmm-navy-3);
+  border: 1px solid var(--mmm-navy-4);
+  color: var(--mmm-text);
+  border-radius: 7px;
+  padding: 0.55rem 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+.mmm-timeslot-btn:hover {
+  border-color: var(--mmm-cyan);
+  color: var(--mmm-cyan);
+}
+.mmm-timeslot-btn--selected {
+  background: var(--mmm-cyan);
+  border-color: var(--mmm-cyan);
+  color: var(--mmm-navy);
+  box-shadow: 0 0 10px rgba(67, 224, 249, 0.4);
+}
+
+/* ── Order summary (step 4) ──────────────────────── */
+.mmm-summary {
+  background: var(--mmm-navy-3);
+  border: 1px solid var(--mmm-navy-4);
+  border-radius: 9px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+}
+.mmm-summary-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--mmm-muted);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+.mmm-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+.mmm-summary-row span:first-child { color: var(--mmm-muted); flex-shrink: 0; }
+.mmm-summary-row span:last-child  { color: var(--mmm-text); text-align: right; }
+.mmm-summary-divider {
+  border: none;
+  border-top: 1px solid var(--mmm-navy-4);
+  margin: 0.5rem 0;
+}
+.mmm-summary-deposit span { color: var(--mmm-text) !important; font-weight: 700; }
+.mmm-summary-deposit span:last-child { color: var(--mmm-cyan) !important; }
+.mmm-summary-note {
+  font-size: 0.7rem;
+  color: var(--mmm-muted);
+  margin-top: 0.4rem;
+  line-height: 1.4;
+}
+
+/* ── Footer ──────────────────────────────────────── */
+.mmm-book-footer {
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--mmm-navy-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.mmm-foot-status {
+  font-size: 0.78rem;
+  color: var(--mmm-muted);
+  flex: 1;
+  min-width: 0;
+}
+.mmm-status--success { color: var(--mmm-success); }
+.mmm-status--error   { color: var(--mmm-error); }
+.mmm-foot-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.mmm-btn-primary {
+  background: var(--mmm-cyan);
+  color: var(--mmm-navy);
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.mmm-btn-primary:hover   { opacity: 0.88; transform: translateY(-1px); }
+.mmm-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.mmm-btn-secondary {
+  background: transparent;
+  color: var(--mmm-muted);
+  border: 1px solid var(--mmm-navy-4);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.mmm-btn-secondary:hover {
+  border-color: var(--mmm-muted);
+  color: var(--mmm-text);
+}
+
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 520px) {
+  .mmm-book-overlay { padding: 0; align-items: flex-end; }
+  .mmm-book-modal   { max-height: 92vh; border-radius: 16px 16px 0 0; }
+  .mmm-service-grid { grid-template-columns: 1fr; }
+  .mmm-timeslot-grid { grid-template-columns: repeat(4, 1fr); }
+  .mmm-book-row     { flex-direction: column; gap: 0; }
+}
+@media (max-width: 360px) {
+  .mmm-timeslot-grid { grid-template-columns: repeat(2, 1fr); }
+}
