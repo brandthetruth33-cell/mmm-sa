@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Booking Confirmed — Mobile Master Mechanic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:  #0b1220;
+      --navy2: #111d30;
+      --navy3: #1a2a45;
+      --navy4: #243554;
+      --cyan:  #43e0f9;
+      --text:  #e8f4f8;
+      --muted: #7ca9bc;
+    }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: var(--navy2);
+      border: 1px solid var(--navy4);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    }
+    .icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(67, 224, 249, 0.15);
+      border: 2px solid var(--cyan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--cyan);
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+    .booking-id {
+      background: var(--navy3);
+      border: 1px solid var(--navy4);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+      font-family: monospace;
+    }
+    .booking-id strong {
+      display: block;
+      color: var(--cyan);
+      font-size: 1rem;
+      margin-top: 0.2rem;
+      font-family: system-ui, sans-serif;
+      font-weight: 700;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .btn-call {
+      display: block;
+      background: var(--cyan);
+      color: var(--navy);
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: opacity 0.15s;
+    }
+    .btn-call:hover { opacity: 0.88; }
+    .btn-home {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+    .btn-home:hover { color: var(--text); }
+    .logo {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2rem;
+      opacity: 0.7;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">&#10003;</div>
+    <h1>Booking Confirmed!</h1>
+    <p class="subtitle">
+      Your $50 deposit has been received.<br>
+      Check your email for a confirmation.<br>
+      We'll be there at your scheduled time.
+    </p>
+    <div class="booking-id">
+      Your Booking ID
+      <strong id="booking-id-display">—</strong>
+    </div>
+    <div class="actions">
+      <a href="tel:+12103185426" class="btn-call">&#128222; Call Us — (210)-318-5426</a>
+      <a href="/" class="btn-home">&#8592; Back to Home</a>
+    </div>
+    <div class="logo">Mobile Master Mechanic &bull; San Antonio, TX</div>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('booking');
+      var el = document.getElementById('booking-id-display');
+      if (id && el) el.textContent = id;
+    })();
+  </script>
+</body>
+</html>

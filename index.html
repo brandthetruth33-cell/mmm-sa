@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mobile Master Mechanic — San Antonio, TX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Booking widget styles -->
+  <link rel="stylesheet" href="./assets/booking-widget.css" />
+
+  <!-- Stripe.js (loaded early for faster Stripe Checkout redirect) -->
+  <script src="https://js.stripe.com/v3/" async></script>
+
+  <!-- Widget loader stub — open() works before the script downloads -->
+  <script>
+    window.BookingWidget = window.BookingWidget || {};
+    window._bookingWidgetLoaded = false;
+    window._bookingWidgetOpenWhenReady = false;
+
+    (function () {
+      function loadWidget() {
+        if (window._bookingWidgetLoaded) return;
+        window._bookingWidgetLoaded = true;
+        var s = document.createElement('script');
+        s.src = './assets/booking-widget.js';
+        s.async = true;
+        document.head.appendChild(s);
+        var d = document.createElement('script');
+        d.src = './assets/services-data.js';
+        d.async = true;
+        document.head.appendChild(d);
+      }
+      window.BookingWidget.open = function () {
+        loadWidget();
+        window._bookingWidgetOpenWhenReady = true;
+      };
+    })();
+  </script>
+
+  <style>
+    /* ── Reset & base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #0b1220;
+      --navy-2: #111d30;
+      --navy-3: #1a2a45;
+      --navy-4: #243554;
+      --cyan:   #43e0f9;
+      --text:   #e8f4f8;
+      --muted:  #7ca9bc;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      line-height: 1.5;
+    }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { opacity: 0.85; }
+
+    /* ── Header ───────────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 18, 32, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--navy-4);
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      background: var(--cyan);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+    }
+    nav a { color: var(--muted); font-weight: 500; }
+    nav a:hover { color: var(--text); }
+    .header-phone {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .header-phone a { color: var(--cyan); }
+    .btn-primary {
+      background: var(--cyan);
+      color: var(--navy);
+      border: none;
+      border-radius: 999px;
+      padding: 0.5rem 1.1rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.15s, transform 0.15s;
+      font-family: inherit;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero {
+      padding: 4.5rem 1.5rem 5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(67, 224, 249, 0.1);
+      border: 1px solid rgba(67, 224, 249, 0.3);
+      color: var(--cyan);
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.03em;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      max-width: 680px;
+    }
+    .hero h1 span { color: var(--cyan); }
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-hero {
+      background: var(--cyan);
+      color: var(--navy);
+      border: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+      font-family: inherit;
+    }
+    .btn-hero:hover { opacity: 0.88; transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--navy-4);
+      border-radius: 999px;
+      padding: 0.7rem 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+
+    /* ── Trust bar ────────────────────────────────────────── */
+    .trust-bar {
+      border-top: 1px solid var(--navy-4);
+      border-bottom: 1px solid var(--navy-4);
+      background: var(--navy-2);
+      padding: 1.1rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.83rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .trust-icon { font-size: 1rem; }
+
+    /* ── Services section ─────────────────────────────────── */
+    .section {
+      padding: 4rem 1.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 0.6rem;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2.25rem;
+      max-width: 480px;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.85rem;
+    }
+    .service-tile {
+      background: var(--navy-2);
+      border: 1px solid var(--navy-4);
+      border-radius: 10px;
+      padding: 1.1rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .service-tile:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 1px rgba(67,224,249,0.15) inset;
+    }
+    .service-tile-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+    .service-tile-price {
+      font-size: 0.8rem;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+    .service-tile-duration {
+      font-size: 0.73rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+    .section-cta {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    /* ── How it works ─────────────────────────────────────── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+    }
+    .step-card {
+      background: var(--navy-2);
+      border: 1px solid var(--navy-4);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(67,224,249,0.15);
+      border: 1.5px solid var(--cyan);
+      color: var(--cyan);
+      font-size: 0.82rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+    .step-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem; }
+    .step-desc  { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--navy-4);
+      background: var(--navy-2);
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .footer-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+    .footer-links a { color: var(--muted); }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .header-phone { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <div class="logo-mark">&#128295;</div>
+      Mobile Master Mechanic
+    </div>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#how-it-works">How It Works</a>
+    </nav>
+    <div class="header-phone"><a href="tel:+12103185426">(210)-318-5426</a></div>
+    <button class="btn-primary" id="book-header">Get a Quote</button>
+  </header>
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <main>
+    <section class="hero">
+      <div class="hero-badge">&#128205; San Antonio, TX</div>
+      <h1>Your mechanic <span>comes to you</span> — no shop needed.</h1>
+      <p>Fast, professional mobile auto repair at your home or office. Book online in under 2 minutes.</p>
+      <div class="hero-actions">
+        <button class="btn-hero" id="book-hero">Get an Instant Quote</button>
+        <a href="tel:+12103185426" class="btn-ghost">&#128222; Call (210)-318-5426</a>
+      </div>
+    </section>
+
+    <!-- ── Trust bar ──────────────────────────────────────── -->
+    <div class="trust-bar">
+      <div class="trust-item"><span class="trust-icon">&#9989;</span> No shop visit required</div>
+      <div class="trust-item"><span class="trust-icon">&#128197;</span> Same-day availability</div>
+      <div class="trust-item"><span class="trust-icon">&#128274;</span> Secure $50 deposit</div>
+      <div class="trust-item"><span class="trust-icon">&#11088;</span> 5-star rated in San Antonio</div>
+    </div>
+
+    <!-- ── Services ───────────────────────────────────────── -->
+    <section class="section" id="services">
+      <div class="section-label">What we fix</div>
+      <h2 class="section-title">Common Services</h2>
+      <p class="section-sub">Transparent pricing, no hidden fees. All work performed at your location.</p>
+
+      <div class="services-grid">
+        <div class="service-tile">
+          <div class="service-tile-name">Diagnostic</div>
+          <div class="service-tile-price">$130 flat</div>
+          <div class="service-tile-duration">~1 hr</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Oil Change</div>
+          <div class="service-tile-price">$65–$85</div>
+          <div class="service-tile-duration">~45 min</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Brake Replacement</div>
+          <div class="service-tile-price">$150–$250</div>
+          <div class="service-tile-duration">~1.5 hr</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Battery Replacement</div>
+          <div class="service-tile-price">$120–$180</div>
+          <div class="service-tile-duration">~30 min</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Alternator Replacement</div>
+          <div class="service-tile-price">$250–$400</div>
+          <div class="service-tile-duration">~2 hr</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Starter Replacement</div>
+          <div class="service-tile-price">$200–$350</div>
+          <div class="service-tile-duration">~2 hr</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Radiator Replacement</div>
+          <div class="service-tile-price">$300–$500</div>
+          <div class="service-tile-duration">~2.5 hr</div>
+        </div>
+        <div class="service-tile">
+          <div class="service-tile-name">Tune-Up</div>
+          <div class="service-tile-price">$100–$200</div>
+          <div class="service-tile-duration">~1 hr</div>
+        </div>
+      </div>
+
+      <div class="section-cta">
+        <button class="btn-hero" id="book-services">Book a Service</button>
+      </div>
+    </section>
+
+    <!-- ── How it works ───────────────────────────────────── -->
+    <section class="section" id="how-it-works"
+             style="background: var(--navy-2); max-width:100%; padding-left:0; padding-right:0;">
+      <div style="max-width:960px; margin:0 auto; padding:0 1.5rem;">
+        <div class="section-label">Simple process</div>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-sub">Four quick steps from quote to wrench in hand.</p>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-title">Enter your car & location</div>
+            <div class="step-desc">Tell us your vehicle and where we should come. We serve the San Antonio metro area.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-title">Pick your service</div>
+            <div class="step-desc">Choose from our menu of common repairs. See transparent price estimates upfront.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-title">Choose a time</div>
+            <div class="step-desc">Select a date and one of our available morning or afternoon slots.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-title">Pay the $50 deposit</div>
+            <div class="step-desc">Secure your spot with a small deposit. The balance is collected on-site when the job is done.</div>
+          </div>
+        </div>
+        <div class="section-cta" style="margin-top:2rem;">
+          <button class="btn-hero" id="book-hiw">Get Started Now</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Floating CTA ─────────────────────────────────────── -->
+  <button class="mmm-book-float" id="book-float" aria-label="Get a Quote">Get a Quote</button>
+
+  <!-- ── Footer ───────────────────────────────────────────── -->
+  <footer>
+    <div class="logo" style="font-size:0.85rem;">&#128295; Mobile Master Mechanic</div>
+    <div class="footer-links">
+      <a href="tel:+12103185426">(210)-318-5426</a>
+      <a href="mailto:gerardo@mobilemastermechanic.com">Email</a>
+      <span>San Antonio, TX</span>
+    </div>
+    <div>&copy; <span id="yr"></span> Mobile Master Mechanic. All rights reserved.</div>
+  </footer>
+
+  <!-- Services catalog must load before widget -->
+  <script src="./assets/services-data.js"></script>
+
+  <!-- Widget script -->
+  <script src="./assets/booking-widget.js"></script>
+
+  <script>
+    // Wire all Book Now / Get a Quote triggers
+    ['book-header','book-hero','book-services','book-hiw','book-float'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('click', function () { window.BookingWidget.open(); });
+    });
+
+    // Footer year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
