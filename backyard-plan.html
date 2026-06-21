@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Backyard Landscape Plan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f0e8;
+    font-family: 'Georgia', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 30px;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  h1 {
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #4a3728;
+    border-bottom: 2px solid #8b6914;
+    padding-bottom: 6px;
+  }
+
+  .compass {
+    font-size: 0.75rem;
+    color: #666;
+    letter-spacing: 0.08em;
+  }
+
+  /* Outer yard boundary */
+  .yard {
+    position: relative;
+    width: 620px;
+    height: 680px;
+    border: 3px solid #4a3728;
+    background: #d4e8c2;
+  }
+
+  /* Cardinal labels */
+  .label-n, .label-s, .label-e, .label-w {
+    position: absolute;
+    font-size: 0.65rem;
+    font-weight: bold;
+    color: #4a3728;
+    letter-spacing: 0.1em;
+  }
+  .label-n { top: 4px; left: 50%; transform: translateX(-50%); }
+  .label-s { bottom: 4px; left: 50%; transform: translateX(-50%); }
+  .label-e { right: 4px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+  .label-w { left: 4px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+  /* West (back/greenbelt) fence strip */
+  .greenbelt {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 80px;
+    background: repeating-linear-gradient(
+      90deg,
+      #6aab5e 0px, #6aab5e 18px,
+      #5a9a4e 18px, #5a9a4e 24px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 3px;
+    border-bottom: 3px solid #4a3728;
+  }
+  .greenbelt .tag {
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  /* South (left) fence strip */
+  .south-fence {
+    position: absolute;
+    top: 80px; left: 0;
+    width: 60px;
+    bottom: 90px;
+    background: repeating-linear-gradient(
+      180deg,
+      #8bc57e 0px, #8bc57e 16px,
+      #7ab56e 16px, #7ab56e 22px
+    );
+    border-right: 2px dashed #5a7a4a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .south-fence .fence-label {
+    writing-mode: vertical-rl;
+    font-size: 0.55rem;
+    color: #2d4a1e;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  /* North (right) fence strip */
+  .north-fence {
+    position: absolute;
+    top: 80px; right: 0;
+    width: 60px;
+    bottom: 90px;
+    background: repeating-linear-gradient(
+      180deg,
+      #8bc57e 0px, #8bc57e 16px,
+      #7ab56e 16px, #7ab56e 22px
+    );
+    border-left: 2px dashed #5a7a4a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .north-fence .fence-label {
+    writing-mode: vertical-rl;
+    font-size: 0.55rem;
+    color: #2d4a1e;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: bold;
+    transform: rotate(180deg);
+  }
+
+  /* Inner yard area (between fences) */
+  .inner {
+    position: absolute;
+    top: 80px; left: 60px; right: 60px; bottom: 90px;
+    background: #c8e6a0;
+  }
+
+  /* Slope break / limestone wall */
+  .slope-break {
+    position: absolute;
+    top: 220px; left: 0; right: 0;
+    height: 28px;
+    background: repeating-linear-gradient(
+      90deg,
+      #c8a96e 0px, #c8a96e 28px,
+      #b89860 28px, #b89860 36px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 2px solid #8b6914;
+    border-bottom: 2px solid #8b6914;
+    z-index: 2;
+  }
+  .slope-break span {
+    background: rgba(255,255,255,0.7);
+    font-size: 0.55rem;
+    padding: 1px 8px;
+    border-radius: 8px;
+    color: #4a3728;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  /* Upper terrace (above slope) */
+  .upper-zone {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 220px;
+    background: #c0dc98;
+  }
+
+  /* VEG bed */
+  .veg-bed {
+    position: absolute;
+    top: 30px; left: 20px;
+    width: 110px; height: 80px;
+    background: #7a5c38;
+    border: 2px solid #5a3c18;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .veg-bed .zone-label {
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+  }
+  .veg-bed .zone-sub {
+    color: #d4b896;
+    font-size: 0.55rem;
+  }
+  .veg-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 6px;
+  }
+  .veg-dot {
+    width: 10px; height: 10px;
+    background: #6aab5e;
+    border-radius: 50%;
+    border: 1px solid #4a8a3e;
+  }
+
+  /* Prayer garden */
+  .prayer {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 150px; height: 180px;
+    background: #e8e0d0;
+    border: 2px solid #8b7a5a;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px;
+  }
+  .prayer .zone-label {
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #4a3728;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  .prayer .zone-dim {
+    font-size: 0.5rem;
+    color: #888;
+  }
+  .fountain {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #a8d8ea 30%, #6ab0cc 100%);
+    border: 2px solid #4a90a8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+  }
+  .bench {
+    width: 50px; height: 14px;
+    background: #8b6914;
+    border-radius: 3px;
+    border: 1px solid #5a4a14;
+  }
+  .laurel {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4a8a3e 40%, #2a5a1e 100%);
+    border: 2px solid #1a3a0e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .prayer .plant-label {
+    font-size: 0.48rem;
+    color: #5a4a28;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* Lower flat zone (lawn/pool/play) */
+  .lower-zone {
+    position: absolute;
+    top: 248px; left: 0; right: 0;
+    bottom: 0;
+    background: #b8d890;
+  }
+
+  /* Lawn label */
+  .lawn-label {
+    position: absolute;
+    top: 60px; left: 0; right: 180px;
+    text-align: center;
+    font-size: 0.6rem;
+    color: #3a6a28;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    line-height: 1.5;
+  }
+
+  /* Outdoor living */
+  .outdoor-living {
+    position: absolute;
+    bottom: 20px; right: 10px;
+    width: 160px; height: 150px;
+    background: #e8d8b0;
+    border: 2px solid #8b6914;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px;
+  }
+  .outdoor-living .zone-label {
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #4a3728;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+  .outdoor-living .zone-dim {
+    font-size: 0.5rem;
+    color: #888;
+  }
+  .shade-sail {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 70px solid rgba(180,140,80,0.55);
+    transform: rotate(-20deg);
+    filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.2));
+  }
+  .shade-label {
+    font-size: 0.48rem;
+    color: #6a5030;
+    font-style: italic;
+  }
+
+  /* House wall */
+  .house {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 90px;
+    background: #c8b89a;
+    border-top: 4px solid #4a3728;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .house span {
+    font-size: 0.65rem;
+    color: #4a3728;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  /* Door */
+  .door {
+    position: absolute;
+    bottom: 90px; left: 50%;
+    transform: translateX(-50%);
+    width: 44px; height: 22px;
+    background: #8b6914;
+    border: 2px solid #5a4a14;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  .door span {
+    font-size: 0.45rem;
+    color: #fff;
+    letter-spacing: 0.05em;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 620px;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1px solid #c8b89a;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    color: #4a3728;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend-swatch {
+    width: 14px; height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <h1>Backyard Landscape Plan</h1>
+  <div class="compass">WEST (greenbelt) → top &nbsp;·&nbsp; EAST (house) → bottom</div>
+
+  <div class="yard">
+    <!-- Cardinal labels -->
+    <div class="label-n">N</div>
+    <div class="label-s">S</div>
+    <div class="label-e">E</div>
+    <div class="label-w">W</div>
+
+    <!-- Greenbelt / back fence -->
+    <div class="greenbelt">
+      <div class="tag">← BACK FENCE / WEST — GREENBELT →</div>
+      <div class="tag">Gulf Muhly · Cenizo · Esperanza · Pride of Barbados</div>
+    </div>
+
+    <!-- South fence screening -->
+    <div class="south-fence">
+      <div class="fence-label">Screening Shrubs</div>
+    </div>
+
+    <!-- North fence screening -->
+    <div class="north-fence">
+      <div class="fence-label">Screening Shrubs</div>
+    </div>
+
+    <!-- Inner yard -->
+    <div class="inner">
+
+      <!-- Upper terrace zone -->
+      <div class="upper-zone">
+
+        <!-- Veg bed -->
+        <div class="veg-bed">
+          <div class="zone-label">VEG BED</div>
+          <div class="zone-sub">4 × 8 ft</div>
+          <div class="veg-row">
+            <div class="veg-dot"></div><div class="veg-dot"></div>
+            <div class="veg-dot"></div><div class="veg-dot"></div>
+            <div class="veg-dot"></div><div class="veg-dot"></div>
+          </div>
+          <div class="zone-sub" style="color:#d4b896;font-size:0.48rem;font-style:italic;">squash</div>
+        </div>
+
+        <!-- Prayer garden -->
+        <div class="prayer">
+          <div class="zone-label">PRAYER GARDEN</div>
+          <div class="zone-dim">~10 × 12 ft terrace</div>
+          <div class="fountain">💧</div>
+          <div class="plant-label">fountain</div>
+          <div class="bench"></div>
+          <div class="plant-label">bench</div>
+          <div class="laurel"></div>
+          <div class="plant-label">TX Mountain Laurel</div>
+        </div>
+
+        <!-- Slope break -->
+        <div class="slope-break">
+          <span>~~~ 2 ft slope break · low limestone wall + DG steps ~~~</span>
+        </div>
+      </div>
+
+      <!-- Lower flat zone -->
+      <div class="lower-zone">
+        <div class="lawn-label">
+          OPEN LAWN · PLAY · POOL<br>
+          <span style="font-size:0.55rem;font-weight:normal;">(~23 ft wide · flat)</span>
+        </div>
+
+        <!-- Outdoor living -->
+        <div class="outdoor-living">
+          <div class="zone-label">OUTDOOR LIVING</div>
+          <div class="zone-dim">12 × 12 ft</div>
+          <div class="shade-sail"></div>
+          <div class="shade-label">shade sail (tilt SW)</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Door -->
+    <div class="door"><span>DOOR</span></div>
+
+    <!-- House wall -->
+    <div class="house">
+      <span>Back of House / East</span>
+    </div>
+
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#6aab5e;border:1px solid #4a8a3e;"></div>
+      Native/pollinator planting
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#7a5c38;border:1px solid #5a3c18;"></div>
+      Vegetable bed
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#e8e0d0;border:1px solid #8b7a5a;"></div>
+      Prayer garden terrace
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#c8a96e;border:1px solid #8b6914;"></div>
+      Limestone wall / DG steps
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#e8d8b0;border:1px solid #8b6914;"></div>
+      Outdoor living / shade sail
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch" style="background:#b8d890;border:1px solid #6a9a40;"></div>
+      Open lawn / play / pool
+    </div>
+  </div>
+</div>
+</body>
+</html>
